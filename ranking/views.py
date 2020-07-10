@@ -1,4 +1,5 @@
 import logging
+import time
 
 from django_redis import get_redis_connection
 
@@ -15,6 +16,7 @@ log = logging.getLogger('ranking')
 class RankingView(APIView):
 
     def get(self, request):
+        """获取排行榜"""
         serializer = RankingGetSerializer(data=request.query_params)
         if not serializer.is_valid():
             return Response(data={'status': 400, 'message': 'params error', 'data': serializer.errors})
@@ -26,7 +28,7 @@ class RankingView(APIView):
         # 获取排名
         conn = get_redis_connection()
         try:
-            device_score = conn.zrevrange(const.RK_RANKING, start, end, withscores=True, score_cast_func=int)
+            device_score = conn.zrevrange(const.RK_RANKING, start, end, withscores=True, score_cast_func=float)
         except Exception as e:
             log.error(f'RankingView get zrange error: {e!r}')
             return Response(data={'status': 500, 'message': 'internal error'})
@@ -36,7 +38,7 @@ class RankingView(APIView):
         own = None
         rank_start = serializer.data['start']
         for dt in device_score:
-            info = {'ranking': rank_start, 'device_id': dt[0], 'score': dt[1]}
+            info = {'ranking': rank_start, 'device_id': dt[0].decode(), 'score': int(dt[1])}
             data.append(info)
             rank_start += 1
 
@@ -63,6 +65,7 @@ class RankingView(APIView):
         return Response(data={'status': 0, 'message': 'OK', 'data': data})
 
     def post(self, request):
+        """提交分数"""
         serializer = RankingSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(data={'status': 400, 'message': 'params error', 'data': serializer.errors})

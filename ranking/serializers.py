@@ -14,11 +14,11 @@ class RankingSerializer(serializers.Serializer):
 
 class RankingGetSerializer(serializers.Serializer):
     start = serializers.IntegerField(min_value=0, default=1)
-    end = serializers.IntegerField(min_value=0, default=-1)
+    end = serializers.IntegerField(min_value=-1, default=-1)
     device_id = serializers.CharField(max_length=256)
 
     def validate(self, attrs):
-        if attrs['start'] and attrs['end'] and attrs['start'] >= attrs['end']:
+        if attrs['start'] and attrs['end'] and attrs['end'] != -1 and attrs['start'] >= attrs['end']:
             raise serializers.ValidationError({'start': 'start can not more than end.'})
         return attrs
 
