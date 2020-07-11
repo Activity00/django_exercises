@@ -50,10 +50,10 @@ def check_version(v1, v2):
     space = len(v1_list) - len(v2_list)
     v2_list.extend([0] * space) if space > 0 else v1_list.extend([0] * space)
 
-    for i, lv in enumerate(v1_list):
-        if lv > v2_list[i]:
+    for value1, value2 in zip(v1_list, v2_list):
+        if value1 > value2:
             return 1
-        elif lv < v2_list[i]:
+        elif value1 < value2:
             return -1
     else:
         return 0
