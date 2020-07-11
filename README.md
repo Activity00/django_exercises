@@ -2,7 +2,7 @@
 
 ### 环境
 - python3.7 redis 4.0
-- docker run --rm --net=host -d redis:latest
+- docker run --rm --net=host -d redis:4.0
 - git clone https://github.com/Activity00/django_exercises.git
 - cd django_exercises && pip install -r requirements.txt
 - python manage.py runserver   
@@ -25,6 +25,7 @@ Destroying test database for alias 'default'...
 ```
 
 - get
+
 ![Alt text](./test_result.png)
 
 
